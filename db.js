@@ -1,13 +1,7 @@
 require('dotenv').config();
 const { neon } = require('@neondatabase/serverless');
 
-const sql = neon({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  ssl: { rejectUnauthorized: false } 
-});
+const sql = neon(process.env.DATABASE_URL);
 
 (async () => {
   try {
