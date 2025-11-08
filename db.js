@@ -1,26 +1,22 @@
-const mysql = require('mysql2/promise');
+require('dotenv').config();
+const { neon } = require('@neondatabase/serverless');
 
-const connection = mysql.createPool({
-  host: 'localhost', 
-  user: 'root',      
-  password: 'password', 
-  database: 'congreso',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+const sql = neon({
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  ssl: { rejectUnauthorized: false } 
 });
 
-async function testConnection() {
-    try {
-        await connection.query('SELECT 1');
-        console.log('Conexión exitosa a MySQL.');
-    } catch (error) {
-        console.error('Error de conexión a MySQL:', error.message);
-        console.log('Asegúrate de que tu servidor MySQL esté corriendo y la base de datos "congreso" exista.');
-        process.exit(1); 
-    }
-}
+(async () => {
+  try {
+    await sql`SELECT 1`;
+    console.log("Conexión exitosa a Neon PostgreSQL.");
+  } catch (error) {
+    console.error("Error de conexión a Neon:", error);
+    process.exit(1);
+  }
+})();
 
-testConnection();
-
-module.exports = connection;
+module.exports = sql;
